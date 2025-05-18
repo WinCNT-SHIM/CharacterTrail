@@ -16,8 +16,8 @@ namespace SSS.System.Echo
 
         public void StartEcho()
         {
-            if (echoRoutine == null)
-                echoRoutine = StartCoroutine(EchoLoop());
+            echoRoutine ??= StartCoroutine(EchoLoop());
+            echoGenerator.ApplyEchoColor(true);
         }
 
         public void StopEchoLoop()
@@ -26,6 +26,7 @@ namespace SSS.System.Echo
             {
                 StopCoroutine(echoRoutine);
                 echoRoutine = null;
+                echoGenerator.ApplyEchoColor(false);
             }
         }
 

@@ -1854,7 +1854,7 @@ MonoBehaviour:
   echoMaterial: {fileID: 2100000, guid: c0068045563e8634eb817382cf7be722, type: 2}
   echoPrefab: {fileID: 977805191943604650, guid: 24034e38710417e46a483f77be76dd9c, type: 3}
   animator: {fileID: 4331337895201738015}
-  echoColor: {r: 0, g: 0, b: 0, a: 0}
+  echoColor: {r: 0.1, g: 1, b: 0.1, a: 1}
 --- !u!114 &3996493714093431887
 MonoBehaviour:
   m_ObjectHideFlags: 0

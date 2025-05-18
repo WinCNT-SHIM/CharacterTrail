@@ -14,18 +14,9 @@ namespace SSS.System.Echo
         
         [Header("Echo Color")]
         public Animator animator;
-        [SerializeField] private Color echoColor;
+        [SerializeField] private Color echoColor = new Color(0.1f, 1.0f, 0.1f, 1.0f);
         private static readonly int IsColorLoopOn = Animator.StringToHash("IsColorLoop");
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-
-        void Start()
-        {
-            if (animator)
-            {
-                animator.SetBool(IsColorLoopOn, true);
-                // animator.Play("CharacterTrailColorLoop");
-            }
-        }
         
         public void CreateEcho(float echoDuration)
         {
@@ -60,6 +51,12 @@ namespace SSS.System.Echo
                 mr.SetPropertyBlock(mpb, i); // 서브메시 단위로 설정
 
             Destroy(echo, echoDuration);
+        }
+
+        public void ApplyEchoColor(bool isActive)
+        {
+            if (!animator) return;
+            animator.SetBool(IsColorLoopOn, isActive);
         }
     }
 }
