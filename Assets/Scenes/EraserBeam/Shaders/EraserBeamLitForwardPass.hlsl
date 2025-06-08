@@ -31,6 +31,7 @@ struct Attributes
 struct Varyings
 {
     float2 uv                       : TEXCOORD0;
+    float2 backFaceUV               : TEXCOORD11;
 
 #if defined(REQUIRES_WORLD_SPACE_POS_INTERPOLATOR)
     float3 positionWS               : TEXCOORD1;
@@ -176,6 +177,7 @@ Varyings LitPassVertex(Attributes input)
     #endif
 
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
+    output.backFaceUV = TRANSFORM_TEX(input.texcoord, _BackfaceMap);
 
     // already normalized from normal transform to WS.
     output.normalWS = normalInput.normalWS;
@@ -220,6 +222,7 @@ Varyings LitPassVertex(Attributes input)
 // Used in Standard (Physically Based) shader
 void LitPassFragment(
     Varyings input
+    , bool cullFace : SV_IsFrontFace
     , out half4 outColor : SV_Target0
 #ifdef _WRITE_RENDERING_LAYERS
     , out float4 outRenderingLayers : SV_Target1
@@ -259,8 +262,15 @@ void LitPassFragment(
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
-
     outColor = color;
+
+    EraserLightData eraserLight = GetEraserLight(inputData.positionWS);
+    float lightAtten = eraserLight.distanceAtten * eraserLight.angleAtten;
+    // outColor.rgb += eraserLight.color.rgb * lightAtten;
+    if (any(lightAtten) > 0.0) discard;
+    
+    float4 backColor = SAMPLE_TEXTURE2D(_BackfaceMap, sampler_BackfaceMap, input.backFaceUV + _Time.y);
+    outColor.rgb = cullFace ? outColor.rgb : backColor;
 
 #ifdef _WRITE_RENDERING_LAYERS
     uint renderingLayers = GetMeshRenderingLayer();

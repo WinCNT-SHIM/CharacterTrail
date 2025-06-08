@@ -7,6 +7,8 @@ Shader "Universal Render Pipeline/Eraser Beam/Lit"
 
         [MainTexture] _BaseMap("Albedo", 2D) = "white" {}
         [MainColor] _BaseColor("Color", Color) = (1,1,1,1)
+        
+        _BackfaceMap("Backface Map", 2D) = "white" {}
 
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
@@ -172,8 +174,8 @@ Shader "Universal Render Pipeline/Eraser Beam/Lit"
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "./EraserBeamLitForwardPass.hlsl"
+            #include "EraserBeamLitInput.hlsl"
+            #include "EraserBeamLitForwardPass.hlsl"
             ENDHLSL
         }
 
@@ -525,5 +527,5 @@ Shader "Universal Render Pipeline/Eraser Beam/Lit"
     }
 
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.LitShader"
+//    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.LitShader"
 }
