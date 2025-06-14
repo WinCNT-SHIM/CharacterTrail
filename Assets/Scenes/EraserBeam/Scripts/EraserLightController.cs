@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(CapsuleCollider))]
 public class EraserLightController : MonoBehaviour
 {
     public Color lightColor = Color.white;
@@ -24,11 +25,15 @@ public class EraserLightController : MonoBehaviour
     private int eraserLightOuterAngle = Shader.PropertyToID("_EraserLightOuterAngle");
     private int eraserLightColor = Shader.PropertyToID("_EraserLightColor");
     private int eraserLightIntensity = Shader.PropertyToID("_EraserLightIntensity");
+    
+    private CapsuleCollider collider;
 
     void OnEnable()
     {
         meshFilter = GetComponent<MeshFilter>();
         renderer = GetComponent<MeshRenderer>();
+        collider = GetComponent<CapsuleCollider>();
+        collider.direction = 2; // Z
         UpdateConeMesh();
         UpdateShader();
     }
@@ -41,6 +46,7 @@ public class EraserLightController : MonoBehaviour
             prevAngle = outerAngle;
             prevRange = range;
             prevSegments = segments;
+            UpdateCollider();
         }
         UpdateConeMaterial();
         UpdateShader();
@@ -50,6 +56,15 @@ public class EraserLightController : MonoBehaviour
     {
         float radius = Mathf.Tan(Mathf.Deg2Rad * outerAngle * 0.5f) * range;
         meshFilter.mesh = CreateConeMesh_ZForward(radius, range, segments);
+    }
+
+    void UpdateCollider()
+    {
+        collider.height = range;
+        var center = collider.center;
+        center.z = range / 2;
+        collider.center = center;
+        collider.radius = (outerAngle / 20) * (range / 10);
     }
 
     Mesh CreateConeMesh_ZForward(float radius, float height, int segments)

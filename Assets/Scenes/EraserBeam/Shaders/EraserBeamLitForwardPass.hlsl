@@ -266,10 +266,13 @@ void LitPassFragment(
 
     EraserLightData eraserLight = GetEraserLight(inputData.positionWS);
     float lightAtten = eraserLight.distanceAtten * eraserLight.angleAtten;
-    // outColor.rgb += eraserLight.color.rgb * lightAtten;
-    if (any(lightAtten) > 0.0) discard;
+    outColor.rgb += eraserLight.color.rgb * lightAtten;
+    float eraserMask = lightAtten > 0.0 ? 1.0 : 0.0;
+    eraserMask = lerp(eraserMask, 1 - eraserMask, step(0.5, _IsEraserBeamReverse));
+    if (_IsEraserBeamApply > 0.5 && eraserMask > 0.5) discard;
     
-    float4 backColor = SAMPLE_TEXTURE2D(_BackfaceMap, sampler_BackfaceMap, input.backFaceUV + _Time.y);
+    float2 backFaceUv = input.positionCS.xy / _ScaledScreenParams.xy;
+    float4 backColor = SAMPLE_TEXTURE2D(_BackfaceMap, sampler_BackfaceMap, backFaceUv + _Time / 100);
     outColor.rgb = cullFace ? outColor.rgb : backColor;
 
 #ifdef _WRITE_RENDERING_LAYERS

@@ -14,6 +14,8 @@
 
 // NOTE: Do not ifdef the properties here as SRP batcher can not handle different layouts.
 CBUFFER_START(UnityPerMaterial)
+half _IsEraserBeamApply;
+half _IsEraserBeamReverse;
 float4 _BaseMap_ST;
 float4 _BaseMap_TexelSize;
 float4 _DetailAlbedoMap_ST;

@@ -8,6 +8,8 @@ Shader "Universal Render Pipeline/Eraser Beam/Lit"
         [MainTexture] _BaseMap("Albedo", 2D) = "white" {}
         [MainColor] _BaseColor("Color", Color) = (1,1,1,1)
         
+        [Toggle] _IsEraserBeamApply("Is EraserBeam Apply", Float) = 0.0
+        [Toggle] _IsEraserBeamReverse("Is EraserBeam Reverse", Float) = 0.0
         _BackfaceMap("Backface Map", 2D) = "white" {}
 
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
